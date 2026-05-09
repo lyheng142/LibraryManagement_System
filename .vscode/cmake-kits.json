@@ -1,0 +1,32 @@
+[
+    {
+        "name": "Linux GCC",
+        "compilers": {
+            "C": "/usr/bin/gcc",
+            "CXX": "/usr/bin/g++"
+        },
+        "preferredGenerator": {
+            "name": "Unix Makefiles"
+        },
+        "isTrusted": true
+    },
+    {
+        "name": "Windows MinGW GCC",
+        "compilers": {
+            "C": "C:/mingw64/bin/gcc.exe",
+            "CXX": "C:/mingw64/bin/g++.exe"
+        },
+        "preferredGenerator": {
+            "name": "MinGW Makefiles"
+        },
+        "isTrusted": true
+    },
+    {
+        "name": "GCC Auto-Detect",
+        "compilers": {
+            "C": "gcc",
+            "CXX": "g++"
+        },
+        "isTrusted": true
+    }
+]

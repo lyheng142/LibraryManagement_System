@@ -1,0 +1,31 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Build and Run",
+            "type": "cppdbg",
+            "request": "launch",
+            "stopAtEntry": false,
+            "environment": [],
+            "externalConsole": true,
+            "preLaunchTask": "Build",
+            "linux": {
+                "program": "${workspaceFolder}/build/library",
+                "cwd": "${workspaceFolder}",
+                "MIMode": "gdb",
+                "miDebuggerPath": "/usr/bin/gdb"
+            },
+            "osx": {
+                "program": "${workspaceFolder}/build/library",
+                "cwd": "${workspaceFolder}",
+                "MIMode": "lldb"
+            },
+            "windows": {
+                "program": "${workspaceFolder}/build/library.exe",
+                "cwd": "${workspaceFolder}",
+                "MIMode": "gdb",
+                "miDebuggerPath": "C:/mingw64/bin/gdb.exe"
+            }
+        }
+    ]
+}
