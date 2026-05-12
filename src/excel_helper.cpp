@@ -1,12 +1,3 @@
-// ═══════════════════════════════════════════════════════════════
-//  excel_helper.cpp  —  ALL data stored in Excel (.xlsx) files
-//
-//  data/books.xlsx    | A:ID  B:Title  C:Author  D:Category  E:Quantity
-//  data/borrow.xlsx   | A:BorrowID  B:Username  C:BookID  D:BookTitle
-//                     | E:BorrowDate  F:ReturnDate  G:Returned(0/1)
-//  data/users.xlsx    | A:Username  B:Password  C:Role
-//                       (managed by auth.cpp)
-// ═══════════════════════════════════════════════════════════════
 #include <iostream>
 #include <filesystem>
 #include <ctime>
@@ -65,9 +56,7 @@ static string cellStr(XLCell cell) {
     return "";
 }
 
-// ═══════════════════════════════════════════════════════════════
 //  BOOKS  ←→  data/books.xlsx
-// ═══════════════════════════════════════════════════════════════
 void saveBooks(const vector<Book>& books) {
     try {
         XLDocument doc;
@@ -121,9 +110,7 @@ void loadBooks(vector<Book>& books) {
     }
 }
 
-// ═══════════════════════════════════════════════════════════════
 //  BORROWS  ←→  data/borrow.xlsx
-// ═══════════════════════════════════════════════════════════════
 void saveBorrows(const vector<Borrow>& borrows) {
     try {
         XLDocument doc;
@@ -184,13 +171,9 @@ void loadBorrows(vector<Borrow>& borrows) {
     }
 }
 
-// ═══════════════════════════════════════════════════════════════
 //  BACKUP & RESTORE  ←→  data/backup/
-//
 //  Backup creates a folder: data/backup/YYYY-MM-DD_HH-MM-SS/
 //  and copies books.xlsx, borrow.xlsx, users.xlsx into it
-// ═══════════════════════════════════════════════════════════════
-
 // Get current datetime as string for folder name
 static string getBackupTimestamp() {
     time_t now = time(0);
