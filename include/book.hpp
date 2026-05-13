@@ -5,9 +5,6 @@
 #include <vector>
 using namespace std;
 
-// ═══════════════════════════════════════════════════════════════
-//  OOP: Book class with private members and public getters/setters
-// ═══════════════════════════════════════════════════════════════
 class Book {
 private:
     int    id;
@@ -27,7 +24,7 @@ public:
     string getTitle()    const { return title;    }
     string getAuthor()   const { return author;   }
     string getCategory() const { return category; }
-    int    getQuantity() const { return quantity; }
+    int    getQuantity()    const { return quantity;    }
 
     // ── Setters ──────────────────────────────────────────────
     void setTitle   (const string& t) { title    = t; }

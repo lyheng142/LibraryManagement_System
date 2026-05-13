@@ -224,14 +224,68 @@ inline void showBanner(const std::string& text, Color borderColor,
     printCenteredBlankLine(); printCentered(t);
 }
 
+// ── Typewriter title effect ───────────────────────────────────────────────────
+// Types out the big ANSI shadow letters character by character
+inline void printAnsiShadowTypewriter(const std::string& text, const char* color, int charDelayMs = 80) {
+    std::string built;
+    for (int ci = 0; ci < (int)text.size(); ci++) {
+        built += text[ci];
+
+        // Build the 6 rows for what we have so far
+        std::array<std::string,6> rows = {"","","","","",""};
+        for (int bi = 0; bi < (int)built.size(); bi++) {
+            char u = (char)std::toupper((unsigned char)built[bi]);
+            if (bi > 0 && u != ' ') {
+                char prevU = (char)std::toupper((unsigned char)built[bi-1]);
+                if (prevU != ' ') for (int r = 0; r < 6; r++) rows[r] += " ";
+            }
+            auto it = ANSI_SHADOW.find(u);
+            if (it == ANSI_SHADOW.end()) continue;
+            for (int r = 0; r < 6; r++) rows[r] += it->second[r];
+        }
+
+        // Move cursor up 6 lines (if not first char) to redraw in place
+        if (ci > 0) std::cout << "\033[6A";
+
+        // Print all 6 rows
+        for (int r = 0; r < 6; r++) {
+            // Clear line then print
+            std::cout << "\033[2K";
+            printCenteredText(std::string(color) + SP_BOLD + rows[r] + SP_RESET, true);
+        }
+        std::cout << std::flush;
+
+#ifdef _WIN32
+        Sleep(charDelayMs);
+#else
+        std::this_thread::sleep_for(std::chrono::milliseconds(charDelayMs));
+#endif
+    }
+    std::cout << "\n";
+}
+
 // ── Library-specific splash ───────────────────────────────────────────────────
 inline void showStartupSplash() {
     clearScreen();
-    printFigletTitle("LIBRARY", SP_CYAN);
-    printFigletTitle("SYSTEM", SP_CYAN);
 
+    std::cout << "\n";
+
+    // Type out LIBRARY letter by letter
+    printAnsiShadowTypewriter("LIBRARY", SP_CYAN, 80);
+
+    // Small pause between words
+#ifdef _WIN32
+    Sleep(150);
+#else
+    std::this_thread::sleep_for(std::chrono::milliseconds(150));
+#endif
+
+    // Type out SYSTEM letter by letter
+    printAnsiShadowTypewriter("SYSTEM", SP_CYAN, 80);
+
+    // Subtitle box fades in after typing
     Table info;
-    info.add_row({"  Library Management System  v1.0  "});
+    info.add_row({"  Library Management System  v2.0  "});
     info.add_row({"  Manage books, borrow, return and track history  "});
     info[0].format().font_align(FontAlign::center).font_style({FontStyle::bold})
         .font_color(Color::cyan).border_color(Color::cyan)

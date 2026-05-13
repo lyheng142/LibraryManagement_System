@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <limits>
+#include <ctime>
 #include <tabulate/table.hpp>
 #include "terminal_layout.hpp"
 
@@ -18,6 +19,50 @@ inline std::string fmtPrice(double price) {
     std::ostringstream ss;
     ss << std::fixed << std::setprecision(2) << price;
     return "$" + ss.str();
+}
+
+
+inline void printClockBar(const std::string& role = "", int bookCount = -1) {
+    // Get current time
+    time_t now = time(0);
+    tm* ltm = localtime(&now);
+
+    const char* dayNames[]   = {"SUN","MON","TUE","WED","THU","FRI","SAT"};
+    const char* monthNames[] = {"JAN","FEB","MAR","APR","MAY","JUN",
+                                "JUL","AUG","SEP","OCT","NOV","DEC"};
+
+    std::ostringstream timeStr, dateStr;
+    timeStr << std::setw(2) << std::setfill('0') << ltm->tm_hour << ":"
+            << std::setw(2) << std::setfill('0') << ltm->tm_min  << ":"
+            << std::setw(2) << std::setfill('0') << ltm->tm_sec;
+    dateStr << dayNames[ltm->tm_wday] << " "
+            << std::setw(2) << std::setfill('0') << ltm->tm_mday << " "
+            << monthNames[ltm->tm_mon] << " "
+            << (1900 + ltm->tm_year);
+
+    // Build the bar content
+    std::string left  = "  \xF0\x9F\x93\x9A  LIBRARY SYSTEM v2.0";
+    std::string mid   = role.empty() ? "" : "  SESSION: " + role;
+    std::string right = "  \xE2\x8F\xB0 " + timeStr.str() + "   " + dateStr.str() + "  ";
+    if (bookCount >= 0)
+        mid += "   BOOKS: " + std::to_string(bookCount);
+
+    // Print as a styled tabulate table spanning full width
+    Table bar;
+    bar.add_row({left + mid, right});
+    bar[0][0].format()
+        .font_color(Color::magenta).font_style({FontStyle::bold})
+        .font_align(FontAlign::left).width(TBL_W - 28);
+    bar[0][1].format()
+        .font_color(Color::cyan).font_style({FontStyle::bold})
+        .font_align(FontAlign::right).width(28);
+    bar[0].format()
+        .border_color(Color::magenta)
+        .padding_top(0).padding_bottom(0);
+    bar.format().border_color(Color::magenta);
+
+    printCenteredBlankLine();
+    printCentered(bar);
 }
 
 // ─── 1-col section banner ─────────────────────────────────────────────────────

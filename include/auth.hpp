@@ -3,8 +3,11 @@
 
 #include <string>
 
-// roles: "librarian"  or  "student"
-bool loginUser(const std::string& requiredRole, std::string& loggedInUsername);
-bool registerUser(const std::string& role);
+bool loginUser    (const std::string& requiredRole, std::string& loggedInUsername);
+bool registerUser (const std::string& role);
+void manageUsers  ();
+bool changePassword(const std::string& username, const std::string& role);
+void logSession    (const std::string& username, const std::string& role, const std::string& action);
+void viewSessionLog();
 
 #endif

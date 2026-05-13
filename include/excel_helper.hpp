@@ -1,13 +1,6 @@
 #ifndef EXCEL_HELPER_HPP
 #define EXCEL_HELPER_HPP
 
-// ═══════════════════════════════════════════════════════════════
-//  excel_helper.hpp  —  Data Persistency using Excel (.xlsx)
-//
-//  data/books.xlsx   → all books
-//  data/borrow.xlsx  → all borrow records
-//  data/users.xlsx   → all user accounts
-// ═══════════════════════════════════════════════════════════════
 
 #include <vector>
 #include "book.hpp"
@@ -25,3 +18,7 @@ std::vector<std::string> listBackups();     // list all backups
 bool restoreData(const std::string& name);  // restore from backup
 
 #endif
+
+// ── Session log ───────────────────────────────────────────────
+void logSession(const std::string& username, const std::string& role, const std::string& action);
+void viewSessionLog();

@@ -1,10 +1,6 @@
 #ifndef PAGINATION_HPP
 #define PAGINATION_HPP
 
-// ═══════════════════════════════════════════════════════════════
-//  Pagination helper — shows any vector page by page
-//  PAGE_SIZE books per page, user presses N/P/Q to navigate
-// ═══════════════════════════════════════════════════════════════
 
 #include <vector>
 #include <string>

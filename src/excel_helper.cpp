@@ -64,6 +64,13 @@ static string cellStr(XLCell cell) {
     } catch (...) {}
     return "";
 }
+static double cellDouble(XLCell cell) {
+    try {
+        if (cell.value().type() == XLValueType::Float)   return cell.value().get<double>();
+        if (cell.value().type() == XLValueType::Integer) return (double)cell.value().get<int32_t>();
+    } catch (...) {}
+    return 0.0;
+}
 
 // ═══════════════════════════════════════════════════════════════
 //  BOOKS  ←→  data/books.xlsx
@@ -79,10 +86,9 @@ void saveBooks(const vector<Book>& books) {
         wks.cell("C1").value() = "Author";
         wks.cell("D1").value() = "Category";
         wks.cell("E1").value() = "Quantity";
-
         int row = 2;
         for (const auto& b : books) {
-            wks.cell(XLCellReference(row,1)).value() = b.getId();
+       wks.cell(XLCellReference(row,1)).value() = b.getId();
             wks.cell(XLCellReference(row,2)).value() = b.getTitle();
             wks.cell(XLCellReference(row,3)).value() = b.getAuthor();
             wks.cell(XLCellReference(row,4)).value() = b.getCategory();
@@ -106,7 +112,7 @@ void loadBooks(vector<Book>& books) {
         books.clear();
         int row = 2;
         while (wks.cell(XLCellReference(row,1)).value().type() != XLValueType::Empty) {
-            books.emplace_back(
+           books.emplace_back(
                 cellInt(wks.cell(XLCellReference(row,1))),
                 cellStr(wks.cell(XLCellReference(row,2))),
                 cellStr(wks.cell(XLCellReference(row,3))),
@@ -129,24 +135,25 @@ void saveBorrows(const vector<Borrow>& borrows) {
         XLDocument doc;
         doc.create(xlPath("borrow.xlsx"), true);
         auto wks = doc.workbook().worksheet("Sheet1");
-
-        wks.cell("A1").value() = "BorrowID";
+wks.cell("A1").value() = "BorrowID";
         wks.cell("B1").value() = "Username";
         wks.cell("C1").value() = "BookID";
         wks.cell("D1").value() = "BookTitle";
         wks.cell("E1").value() = "BorrowDate";
-        wks.cell("F1").value() = "ReturnDate";
-        wks.cell("G1").value() = "Returned";
+        wks.cell("F1").value() = "DueDate";      // ← NEW (was ReturnDate)
+        wks.cell("G1").value() = "ReturnDate";   // ← SHIFTED from F to G
+        wks.cell("H1").value() = "Returned";     // ← SHIFTED from G to H
 
         int row = 2;
         for (const auto& b : borrows) {
-            wks.cell(XLCellReference(row,1)).value() = b.getBorrowId();
+         wks.cell(XLCellReference(row,1)).value() = b.getBorrowId();
             wks.cell(XLCellReference(row,2)).value() = b.getUsername();
             wks.cell(XLCellReference(row,3)).value() = b.getBookId();
             wks.cell(XLCellReference(row,4)).value() = b.getBookTitle();
             wks.cell(XLCellReference(row,5)).value() = b.getBorrowDate();
-            wks.cell(XLCellReference(row,6)).value() = b.getReturnDate();
-            wks.cell(XLCellReference(row,7)).value() = b.isReturned() ? 1 : 0;
+            wks.cell(XLCellReference(row,6)).value() = b.getDueDate();      // ← NEW col F
+            wks.cell(XLCellReference(row,7)).value() = b.getReturnDate();   // ← shifted to G
+            wks.cell(XLCellReference(row,8)).value() = b.isReturned() ? 1 : 0; // ← shifted to H
             row++;
         }
         doc.save();
@@ -173,8 +180,10 @@ void loadBorrows(vector<Borrow>& borrows) {
                 cellStr(wks.cell(XLCellReference(row,4))),
                 cellStr(wks.cell(XLCellReference(row,5)))
             );
-            if (cellInt(wks.cell(XLCellReference(row,7))) == 1)
-                b.markReturned(cellStr(wks.cell(XLCellReference(row,6))));
+            string dueDate = cellStr(wks.cell(XLCellReference(row,6)));
+            if (!dueDate.empty()) b.setDueDate(dueDate);
+            if (cellInt(wks.cell(XLCellReference(row,8))) == 1)
+                b.markReturned(cellStr(wks.cell(XLCellReference(row,7))));
             borrows.push_back(b);
             row++;
         }
